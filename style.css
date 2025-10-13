@@ -1,9 +1,28 @@
-#content {
-    z-index: 10;
+body {
+    font-family: sans-serif;
+    background-color: black;
+    color: white;
+}
+
+a {
+    color: gray !important;
 }
 
 #overlay {
-    z-index: 20;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: #0009;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+#overlay .play {
+    padding: 7em;
 }
 
 #container {
@@ -14,34 +33,54 @@
     justify-content: center;
 }
 
+#container>div {
+    width: 100%;
+}
+
 #container p {
-    font-size: 4vw;
-    padding: 1em;
+    padding: 0 0.5em;
+    font-weight: bold;
     text-align: center;
-    user-select: none;
+}
+
+#lyrics {
+    margin-top: 2em;
+    font-size: 6em;
 }
 
 #media {
     position: absolute;
     right: 10px;
-    bottom: 30px;
-    background: rgba(0, 0, 0, 0.2);
+    bottom: 10px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#header {
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 #meta {
-    position: absolute;
-    left: 10px;
-    top: 10px;
+    margin: 10px;
     padding: 5px;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+
+#footer>p {
+    margin-left: 10px;
 }
 
 #control {
-    position: absolute;
-    left: 10px;
-    bottom: 30px;
+    margin: 10px;
     padding: 5px;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 #control>button {
@@ -50,13 +89,4 @@
 
 #control>button:last-child {
     margin-right: 0;
-}
-
-#beatbar {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0;
-    height: 20px;
-    background: #000;
 }

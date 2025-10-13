@@ -14,7 +14,7 @@ import { Player, Ease } from "textalive-app-api";
 const player = new Player({
   app: {
     // トークンは https://developer.textalive.jp/profile で取得したものを使う
-    token: "WWvjJHTdwTORGwNI"
+    token: "OGUYvAydu4GEHawZ"
   },
   mediaElement: document.querySelector("#media")
 });
