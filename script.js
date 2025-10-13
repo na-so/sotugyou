@@ -1,80 +1,53 @@
-const { Player, Ease } = TextAliveApp;
+const { Player } = TextAliveApp;
 
-const player = new Player({
-  app: {
-    appAuthor: "Jun Kato",
-    appName: "Basic example"
-  },
-  mediaElement: document.querySelector("#media")
-});
+let songUrl = 'http://www.youtube.com/watch?v=ygY2qObZv24';
 
-player.addListener({
-  onAppReady,
-  onTimerReady,
-  onTimeUpdate,
-  onThrottledTimeUpdate
-});
-
-const playBtn = document.querySelector("#play");
-const jumpBtn = document.querySelector("#jump");
-const pauseBtn = document.querySelector("#pause");
-const rewindBtn = document.querySelector("#rewind");
-const positionEl = document.querySelector("#position strong");
-
-const artistSpan = document.querySelector("#artist span");
-const songSpan = document.querySelector("#song span");
-const phraseEl = document.querySelector("#container p");
-const beatbarEl = document.querySelector("#beatbar");
-
-function onAppReady(app) {
-  if (!app.managed) {
-    document.querySelector("#control").style.display = "block";
-    playBtn.addEventListener("click", () => player.video && player.requestPlay());
-    jumpBtn.addEventListener("click", () => player.video && player.requestMediaSeek(player.video.firstPhrase.startTime));
-    pauseBtn.addEventListener("click", () => player.video && player.requestPause());
-    rewindBtn.addEventListener("click", () => player.video && player.requestMediaSeek(0));
-  }
-  if (!app.songUrl) {
-    player.createFromSongUrl("http://www.youtube.com/watch?v=ygY2qObZv24");
-  }
-}
-
-function onTimerReady() {
-  artistSpan.textContent = player.data.song.artist.name;
-  songSpan.textContent = player.data.song.name;
-
-  document
-    .querySelectorAll("button")
-    .forEach((btn) => (btn.disabled = false));
-
-  let p = player.video.firstPhrase;
-  jumpBtn.disabled = !p;
-
-  // set `animate` method
-  while (p && p.next) {
-    p.animate = animatePhrase;
-    p = p.next;
-  }
-}
-
-function onTimeUpdate(position) {
-
-  // show beatbar
-  const beat = player.findBeat(position);
-  if (!beat) {
-    return;
-  }
-  beatbarEl.style.width = `${Math.ceil(Ease.circIn(beat.progress(position)) * 100)}%`;
-}
-
-function onThrottledTimeUpdate(position) {
-  positionEl.textContent = String(Math.floor(position));
-}
-
-function animatePhrase(now, unit) {
-
-  // show current phrase
+// 単語ごとに歌詞を表示
+const animateWord = (now, unit) => {
   if (unit.contains(now)) {
-    phraseEl.textContent = unit.text;
+    $('#text').html(unit.text);
   }
 };
+
+const run = () =>{
+  //初期化処理
+  $('#info').empty();
+  $('#media').empty();
+
+  const songUrlVal = $('input[name="songUrl"]').val();
+  if (songUrlVal!='') songUrl=songUrlVal;
+  const player = new Player({ app: true , mediaElement: document.querySelector('#media')});
+  console.log('Run');
+  player.addListener({
+    onAppReady: (app) => {
+      console.log('AppReady');
+      player.createFromSongUrl(songUrl);
+    },
+
+    // 楽曲情報読み込み完了後、呼ばれる
+    // この時点ではrequestPlay()等が実行不能
+    onVideoReady: (v) => {
+      console.log('VideoReady');
+      let infoContents = '';
+      infoContents += '<h1>楽曲情報</h1>';
+      infoContents += '<h2>楽曲名：<br>' + player.data.song.name + '</h2>';
+      infoContents += '<h2>アーティスト名：<br>' + player.data.song.artist.name + '</h2>';
+      $('#info').html(infoContents);
+      $('#text').html('[再生準備待機中]');
+    },
+
+    // 再生準備完了後、呼ばれる
+    // これ以降、requestPlay()等が実行可能
+    onTimerReady: () => {
+      console.log('TimerReady');
+      $('#text').html('[再生開始]');
+      player.requestPlay();
+      // 定期的に呼ばれる各単語の "animate" 関数をセットする
+      let w = player.video.firstWord;
+      while (w) {
+        w.animate = animateWord;
+        w = w.next;
+      }
+    },
+  });
+}
