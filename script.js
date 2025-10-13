@@ -1,6 +1,6 @@
 const { Player } = TextAliveApp;
 
-let songUrl = 'https://www.nicovideo.jp/watch/sm39484471';
+let songUrl = 'http://www.youtube.com/watch?v=ygY2qObZv24';
 
 // 単語ごとに歌詞を表示
 const animateWord = (now, unit) => {
