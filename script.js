@@ -1,20 +1,9 @@
-/**
- * TextAlive App API phrase example
- * https://github.com/TextAliveJp/textalive-app-phrase
- *
- * 発声中の歌詞をフレーズ単位で表示します。
- * また、このアプリが TextAlive ホストと接続されていなければ再生コントロールを表示します。
- *
- * より詳しいコメントがついた網羅的なサンプルコードは https://github.com/TextAliveJp/textalive-app-basic にあります。
- * `script` タグで API を読み込むサンプルコードは https://github.com/TextAliveJp/textalive-app-script-tag にあります。
- */
-
-import { Player, Ease } from "textalive-app-api";
+const { Player, Ease } = TextAliveApp;
 
 const player = new Player({
   app: {
-    // トークンは https://developer.textalive.jp/profile で取得したものを使う
-    token: "OGUYvAydu4GEHawZ"
+    appAuthor: "Jun Kato",
+    appName: "Basic example"
   },
   mediaElement: document.querySelector("#media")
 });
@@ -46,17 +35,7 @@ function onAppReady(app) {
     rewindBtn.addEventListener("click", () => player.video && player.requestMediaSeek(0));
   }
   if (!app.songUrl) {
-    // blues / First Note
-    player.createFromSongUrl("https://piapro.jp/t/FDb1/20210213190029", {
-      video: {
-        // 音楽地図訂正履歴: https://songle.jp/songs/2121525/history
-        beatId: 3953882,
-        repetitiveSegmentId: 2099561,
-        // 歌詞タイミング訂正履歴: https://textalive.jp/lyrics/piapro.jp%2Ft%2FFDb1%2F20210213190029
-        lyricId: 52065,
-        lyricDiffId: 5093,
-      },
-    });
+    player.createFromSongUrl("http://www.youtube.com/watch?v=ygY2qObZv24");
   }
 }
 
