@@ -11,7 +11,7 @@
 
 const { Player } = TextAliveApp;
 
-const songurl = "https://www.nicovideo.jp/watch/sm12825985";
+const songurl = "https://www.youtube.com/watch?v=6uhuWPj7_KI";
 
 const appAuthor = "Taisuke Fukuno";
 const appName = "Baisc Sample";
