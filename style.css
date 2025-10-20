@@ -60,3 +60,62 @@
     height: 20px;
     background: #000;
 }
+
+/* ... (既存のコードは省略) ... */
+
+#container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#container p {
+    font-size: 4vw;
+    padding: 1em;
+    text-align: center;
+    user-select: none;
+
+    /* 💡 変更1: 単語を横に並べ、改行を可能にする */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* 中央寄せを維持 */
+}
+
+/* 💡 変更2: 単語（.lyrics-word）の初期スタイルとトランジション */
+.lyrics-word {
+    display: inline-block;
+    /* トランスフォームを適用可能にする */
+    position: relative;
+    /* p要素からの相対位置（flexアイテムとして） */
+
+    opacity: 0;
+    /* 初期状態では非表示 */
+    /* 横（左）から出てくるように、初期位置を左にずらしておく */
+    transform: translateX(-50px) translateY(0);
+
+    /* アニメーションの速度を定義（0.3秒で滑らかに動く） */
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* 💡 変更3: 出現アニメーション（横から出てくる） */
+.lyrics-word.is-active {
+    opacity: 1;
+    /* 不透明にして見えるようにする */
+    transform: translateX(0) translateY(0);
+    /* 本来の位置（translateX(0)）に戻る */
+}
+
+/* 💡 変更4: 消滅アニメーション（上に消える） */
+.lyrics-word.is-gone {
+    opacity: 0;
+    /* 透明にして見えなくする */
+    /* 上方向（Y軸マイナス方向）に移動させる */
+    transform: translateX(0) translateY(-20px);
+    /* 消滅アニメーションは少し速くする（オプション） */
+    transition: transform 0.2s ease-in, opacity 0.2s ease-in;
+}
+
+/* ... (既存のコードは省略) ... */

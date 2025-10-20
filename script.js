@@ -16,9 +16,24 @@ const songurl = "https://www.nicovideo.jp/watch/sm12825985";
 const appAuthor = "Taisuke Fukuno";
 const appName = "Baisc Sample";
 
+const lyricsContainer = document.querySelector("#container p");
+const wordElementMap = new Map();
+
 const animateWord = (now, unit) => {
+  const wordElement = wordElementMap.get(unit);
+  if (!wordElement) return;
+
   if (unit.contains(now)) {
-    text.textContent = unit.text;
+    // 発声中: 横から出てくる（.is-active）
+    wordElement.classList.add('is-active');
+    wordElement.classList.remove('is-gone'); // 消滅を解除
+  } else if (now > unit.endTime) {
+    // 発声終了後: 上に消える（.is-gone）
+    wordElement.classList.add('is-gone');
+    wordElement.classList.remove('is-active');
+  } else {
+    // 発声前: 初期状態（クラス解除）
+    wordElement.classList.remove('is-active', 'is-gone');
   }
 };
 
@@ -44,9 +59,25 @@ player.addListener({
   onVideoReady(v) {
     document.querySelector("#artist span").textContent = player.data.song.artist.name;
     document.querySelector("#song span").textContent = player.data.song.name;
+
+    // 💡 変更4: 既存のテキストをクリアし、単語DOM要素を生成
+    lyricsContainer.textContent = "";
+    wordElementMap.clear();
+
     let w = player.video.firstWord;
     while (w) {
       w.animate = animateWord;
+
+      const wordSpan = document.createElement('span');
+      wordSpan.className = 'lyrics-word'; // CSSクラスを設定
+      wordSpan.textContent = w.text;
+
+      // 単語の区切りにスペースを入れる
+      lyricsContainer.appendChild(wordSpan);
+      lyricsContainer.appendChild(document.createTextNode(' '));
+
+      wordElementMap.set(w, wordSpan); // 単語データと要素を関連付ける
+
       w = w.next;
     }
   },
@@ -58,14 +89,26 @@ player.addListener({
   },
   onThrottledTimeUpdate(pos) {
     document.querySelector("#position strong").textContent = Math.floor(pos);
+    // 💡 変更5: 単語単位のアニメーションはanimateWordに任せるため、ここでは特にDOM操作は不要
   },
+
   onPlay() {
     overlay.style.display = "none";
   },
+
   onPause() {
-    text.textContent = "-";
+    // 💡 変更6: 停止時に文字を初期状態に戻す
+    wordElementMap.forEach(element => {
+        element.classList.remove('is-active', 'is-gone');
+    });
+    // text.textContent = "-"; // 元のコードの単語表示テキストは不要
   },
+
   onStop() {
-    text.textContent = "-";
+    // 💡 変更7: 停止時に文字を初期状態に戻す
+    wordElementMap.forEach(element => {
+        element.classList.remove('is-active', 'is-gone');
+    });
+    // text.textContent = "再生してください"; // 元のコードの単語表示テキストは不要
   },
 });
