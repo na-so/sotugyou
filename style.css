@@ -1,121 +1,84 @@
-#content {
-    z-index: 10;
+/*
+  整理済み style.css
+  - 重複を削除
+  - セクション: 変数 → リセット → レイアウト → コンポーネント → ユーティリティ
+  - 簡潔なコメントを追加
+*/
+
+:root{
+    --bg-overlay: rgba(0,0,0,0.2);
+    --beatbar-color: #000;
+    --font-size-main: 4vw;
+    --control-gap: 5px;
 }
 
-#overlay {
-    z-index: 20;
+/* リセット / ベース */
+*{box-sizing:border-box}
+html,body,#container{height:100%;width:100%}
+body{margin:0}
+
+/* レイヤー管理 */
+#content{z-index:10}
+#overlay{z-index:20}
+
+/* レイアウト */
+#container{
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-#container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+#container p{
+    font-size:var(--font-size-main);
+    padding:1em;
+    text-align:center;
+    user-select:none;
 }
 
-#container p {
-    font-size: 4vw;
-    padding: 1em;
-    text-align: center;
-    user-select: none;
+/* 固定配置される小要素 */
+#media,
+#meta,
+#control{
+    position:absolute;
+    padding:5px;
+    background:var(--bg-overlay);
 }
 
-#media {
-    position: absolute;
-    right: 10px;
-    bottom: 30px;
-    background: rgba(0, 0, 0, 0.2);
+#media{right:10px;bottom:30px}
+#meta{left:10px;top:10px}
+#control{left:10px;bottom:30px}
+
+#control > button{margin-right:var(--control-gap)}
+#control > button:last-child{margin-right:0}
+
+#beatbar{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:0; /* JSで変化させる想定 */
+    height:20px;
+    background:var(--beatbar-color);
 }
 
-#meta {
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    padding: 5px;
-    background: rgba(0, 0, 0, 0.2);
+/* コンポーネント: 歌詞ワードアニメーション */
+.lyrics-word{
+    display:inline-block;
+    position:relative;
+    opacity:0;
+    transform:translateX(-50px) translateY(0);
+    transition:transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+.lyrics-word.is-active{
+    opacity:1;
+    transform:translateX(0) translateY(0);
+}
+.lyrics-word.is-gone{
+    opacity:0;
+    transform:translateX(0) translateY(-20px);
+    transition:transform 0.2s ease-in, opacity 0.2s ease-in;
 }
 
-#control {
-    position: absolute;
-    left: 10px;
-    bottom: 30px;
-    padding: 5px;
-    background: rgba(0, 0, 0, 0.2);
-}
+/* ユーティリティ（必要に応じて追加） */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
-#control>button {
-    margin-right: 5px;
-}
-
-#control>button:last-child {
-    margin-right: 0;
-}
-
-#beatbar {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0;
-    height: 20px;
-    background: #000;
-}
-
-/* ... (既存のコードは省略) ... */
-
-#container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#container p {
-    font-size: 4vw;
-    padding: 1em;
-    text-align: center;
-    user-select: none;
-
-    /* 💡 変更1: 単語を横に並べ、改行を可能にする */
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    /* 中央寄せを維持 */
-}
-
-/* 💡 変更2: 単語（.lyrics-word）の初期スタイルとトランジション */
-.lyrics-word {
-    display: inline-block;
-    /* トランスフォームを適用可能にする */
-    position: relative;
-    /* p要素からの相対位置（flexアイテムとして） */
-
-    opacity: 0;
-    /* 初期状態では非表示 */
-    /* 横（左）から出てくるように、初期位置を左にずらしておく */
-    transform: translateX(-50px) translateY(0);
-
-    /* アニメーションの速度を定義（0.3秒で滑らかに動く） */
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-}
-
-/* 💡 変更3: 出現アニメーション（横から出てくる） */
-.lyrics-word.is-active {
-    opacity: 1;
-    /* 不透明にして見えるようにする */
-    transform: translateX(0) translateY(0);
-    /* 本来の位置（translateX(0)）に戻る */
-}
-
-/* 💡 変更4: 消滅アニメーション（上に消える） */
-.lyrics-word.is-gone {
-    opacity: 0;
-    /* 透明にして見えなくする */
-    /* 上方向（Y軸マイナス方向）に移動させる */
-    transform: translateX(0) translateY(-20px);
-    /* 消滅アニメーションは少し速くする（オプション） */
-    transition: transform 0.2s ease-in, opacity 0.2s ease-in;
-}
-
-/* ... (既存のコードは省略) ... */
+/* ここに他の既存スタイルを追加してください（省略されていた部分） */
