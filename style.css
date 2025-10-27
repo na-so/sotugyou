@@ -72,20 +72,21 @@
 }
 
 .lyrics-word {
-    color: #b3fd93;
-    display: inline-block;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    opacity: 0;
-    /* 初期状態では非表示 */
-    /* 横（左）から出てくるように、初期位置を左にずらしておく */
-    transform: translate(-50%,-50%) translateX(50px);
+        color: #b3fd93;
+        display: inline-block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        opacity: 0;
+        /* 初期状態では非表示 */
 
-    /* アニメーションの速度を定義（0.3秒で滑らかに動く） */
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-    white-space: nowrap;
-}
+        /* 🚨 修正: 横（左）から出てくるように、translateX(-50px) に修正 🚨 */
+        transform: translate(-50%, -50%) translateX(-50px);
+
+        /* アニメーションの速度を定義（0.3秒で滑らかに動く） */
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        white-space: nowrap;
+    }
 
 /* 💡 変更3: 出現アニメーション（横から出てくる） */
 .lyrics-word.is-active {

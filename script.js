@@ -88,7 +88,7 @@ player.addListener({
 
       // 単語の区切りにスペースを入れる
       lyricsContainer.appendChild(wordSpan);
-      lyricsContainer.appendChild(document.createTextNode(' '));
+      // lyricsContainer.appendChild(document.createTextNode(' '));
 
       wordElementMap.set(w, wordSpan); // 単語データと要素を関連付ける
 
