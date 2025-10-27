@@ -70,7 +70,9 @@
     height: 20px;
     background: #000;
 }
+
 .lyrics-word {
+    color: #b3fd93;
     display: inline-block;
     position: absolute;
     top: 50%;
@@ -100,5 +102,54 @@
     /* 上方向（Y軸マイナス方向）に移動させる */
     transform: translate(-50%,-50%) translateY(-20px);
     /* 消滅アニメーションは少し速くする（オプション） */
+    transition: transform 0.2s ease-in, opacity 0.2s ease-in;
+}
+
+/* 1. 初期位置の変更: 右側からスタートするように設定 */
+.lyrics-word.mode-right {
+    /* デフォルトの translateX(-50px) を上書きし、右側（+50px）に初期位置をずらす */
+    /* translate(-50%, -50%) は中央固定のために残す */
+    transform: translate(-50%, -50%) translateX(50px);
+}
+
+/* 2. 出現時の位置: 中央へ（is-activeとmode-rightの両方が適用されたとき） */
+.lyrics-word.mode-right.is-active {
+    opacity: 1;
+    /* 中央の位置に固定（横移動をリセット） */
+    transform: translate(-50%, -50%) translateX(0);
+}
+
+/* 3. 消滅時の位置: 下に消える */
+.lyrics-word.mode-right.is-gone {
+    opacity: 0;
+    /* 中央から下に消える（translateY(20px)） */
+    transform: translate(-50%, -50%) translateY(20px);
+
+    /* 消滅アニメーションを速くする（オプション） */
+    transition: transform 0.2s ease-in, opacity 0.2s ease-in;
+}
+
+/* ---------------------------------------------------- */
+/* 💡 新しいモード2: 上から出てきて、左に消える (mode-top) */
+/* ---------------------------------------------------- */
+/* 他のモードも同様に定義できます。例えば「上から出てきて、左に消える」モードを追加する場合:
+    (このモードを使うには、script.jsで mode-top を適用するロジックも追加が必要です)
+*/
+.lyrics-word.mode-top {
+    /* 上から出てくるように、初期位置を上にずらす */
+    transform: translate(-50%, -50%) translateY(-50px);
+}
+
+.lyrics-word.mode-top.is-active {
+    opacity: 1;
+    /* 中央の位置に固定 */
+    transform: translate(-50%, -50%) translateY(0);
+}
+
+.lyrics-word.mode-top.is-gone {
+    opacity: 0;
+    /* 左に消える */
+    transform: translate(-50%, -50%) translateX(-20px);
+
     transition: transform 0.2s ease-in, opacity 0.2s ease-in;
 }

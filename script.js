@@ -23,6 +23,20 @@ const animateWord = (now, unit) => {
   const wordElement = wordElementMap.get(unit);
   if (!wordElement) return;
 
+  // 単語が所属するフレーズ（行）を取得
+  const phrase = unit.parentPhrase;
+
+  // 💡 修正1: 新しいモードを定義
+  const IS_RIGHT_MODE = (phrase.startTime >= 20000 && phrase.endTime < 25000);
+
+  if (IS_RIGHT_MODE) {
+      // 右から出てくるクラスを適用
+      wordElement.classList.add('mode-right');
+  } else {
+      // 対象外の時間帯はクラスを解除
+      wordElement.classList.remove('mode-right');
+  }
+
   if (unit.contains(now)) {
     // 発声中: 横から出てくる（.is-active）
     wordElement.classList.add('is-active');
