@@ -16,7 +16,7 @@ const songurl = "https://www.nicovideo.jp/watch/sm12825985";
 const appAuthor = "Taisuke Fukuno";
 const appName = "Baisc Sample";
 
-const lyricsContainer = document.querySelector("#container p");
+const lyricsContainer = document.querySelector("#lyrics");
 const wordElementMap = new Map();
 
 const animateWord = (now, unit) => {
@@ -91,7 +91,6 @@ player.addListener({
       // lyricsContainer.appendChild(document.createTextNode(' '));
 
       wordElementMap.set(w, wordSpan); // 単語データと要素を関連付ける
-
       w = w.next;
     }
   },
