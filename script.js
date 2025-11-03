@@ -70,7 +70,7 @@ player.addListener({
       player.createFromSongUrl(songurl);
     }
   },
-  onVideoReady(v) {
+onVideoReady(v) {
     document.querySelector("#artist span").textContent = player.data.song.artist.name;
     document.querySelector("#song span").textContent = player.data.song.name;
 
@@ -88,12 +88,12 @@ player.addListener({
 
       // 単語の区切りにスペースを入れる
       lyricsContainer.appendChild(wordSpan);
-      // lyricsContainer.appendChild(document.createTextNode(' '));
 
       wordElementMap.set(w, wordSpan); // 単語データと要素を関連付ける
       w = w.next;
     }
   },
+
   onTimerReady(t) {
     if (!player.app.managed) {
       document.querySelectorAll("button").forEach((btn) => btn.disabled = false);
