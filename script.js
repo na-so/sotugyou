@@ -24,10 +24,11 @@ const animateWord = (now, unit) => {
   if (!wordElement) return;
 
   // 単語が所属するフレーズ（行）を取得
-  const phrase = unit.parentPhrase;
+  // 一旦消す↓
+  // const phrase = unit.parentPhrase;
 
   // 💡 修正1: 新しいモードを定義
-  const IS_RIGHT_MODE = (phrase.startTime >= 20000 && phrase.endTime < 25000);
+  const IS_RIGHT_MODE = (now >= 20000 && now < 25000);
 
   if (IS_RIGHT_MODE) {
       // 右から出てくるクラスを適用
@@ -87,7 +88,7 @@ onVideoReady(v) {
       wordSpan.textContent = w.text;
 
       // 単語の区切りにスペースを入れる
-      lyricsContainer.appendChild(wordSpan);
+      llyricsContainer.appendChild(wordSpan);
 
       wordElementMap.set(w, wordSpan); // 単語データと要素を関連付ける
       w = w.next;

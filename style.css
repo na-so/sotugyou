@@ -19,13 +19,6 @@
     padding: 1em;
     text-align: center;
     user-select: none;
-
-    /*横に並べ、改行を可能にする:変更↓一箇所にしてみる
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center; */
-
-    /* ここから変更先 */
     position: relative;
     text-align: center;
     width: 100%;
@@ -72,21 +65,21 @@
 }
 
 .lyrics-word {
-        color: #b3fd93;
-        display: inline-block;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        opacity: 0;
-        /* 初期状態では非表示 */
+color: #b3fd93;
+    display: inline-block;
+    /* 💡 再修正: 絶対配置を有効に戻す */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    opacity: 0;
+    /* 初期状態では非表示 */
 
-        /* 🚨 修正: 横（左）から出てくるように、translateX(-50px) に修正 🚨 */
-        transform: translate(-50%, -50%) translateX(-50px);
+    /* 横（左）から出てくる初期位置 */
+    transform: translate(-50%, -50%) translateX(-50px);
 
-        /* アニメーションの速度を定義（0.3秒で滑らかに動く） */
-        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-        white-space: nowrap;
-    }
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    white-space: nowrap;
+}
 
 /* 💡 変更3: 出現アニメーション（横から出てくる） */
 .lyrics-word.is-active {
