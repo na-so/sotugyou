@@ -19,6 +19,12 @@
     padding: 1em;
     text-align: center;
     user-select: none;
+
+    /* ↓↓↓ 追加 ↓↓↓ */
+        opacity: 0;
+        /* 初期状態で非表示 */
+        /* opacity, transform, color の変化を0.2秒かけて滑らかにする */
+        transition: opacity 0.2s, transform 0.2s, color 0.2s;
 }
 
 #media {
