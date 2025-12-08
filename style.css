@@ -19,12 +19,6 @@
     padding: 1em;
     text-align: center;
     user-select: none;
-
-    /* ↓↓↓ 追加 ↓↓↓ */
-        /* opacity: 0; */
-        /* 初期状態で非表示 */
-        /* opacity, transform, color の変化を0.2秒かけて滑らかにする */
-        /* transition: opacity 0.2s, transform 0.2s, color 0.2s; */
 }
 
 #media {
@@ -39,7 +33,7 @@
     left: 10px;
     top: 10px;
     padding: 5px;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0 , 0.2);
 }
 
 #control {
@@ -65,4 +59,39 @@
     width: 0;
     height: 20px;
     background: #000;
+}
+
+#content #container p {
+    color: #000;
+}
+
+/* キャンパスのあれこれ */
+#p5-canvas-container {
+    position: fixed;
+    /* 画面全体に固定 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -100;
+    /* #content (z-index: 10) や #overlay (z-index: 20) より低い値にする */
+}
+
+/* p5.jsによって自動生成されたcanvasのスタイル調整（念のため） */
+#p5-canvas-container canvas {
+    display: block;
+}
+
+
+/* 既存の#container p のスタイルを修正 */
+#container p {
+    font-size: 4vw;
+    padding: 1em;
+    text-align: center;
+    user-select: none;
+
+    /* 💡変更: 背景のp5.jsアニメーションが見えるように背景色を透明に */
+    background-color: transparent;
+    color: #000;
+    /* 歌詞の色は適切に設定してください */
 }
