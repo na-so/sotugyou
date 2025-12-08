@@ -1,4 +1,3 @@
-
 /**
  * TextAlive App API script tag example
  * https://github.com/TextAliveJp/textalive-app-script-tag
@@ -20,11 +19,18 @@ const player = new Player({
   mediaElement: document.querySelector("#media")
 });
 
+// 💡 追加：p5.jsで利用するためのグローバル変数
+/** @type {TextAliveApp.Phrase | null} */
+let currentPhrase = null;
+/** @type {TextAliveApp.Word | null} */
+let currentWord = null;
+let currentPosition = 0; // 現在の再生位置を保持
+
 player.addListener({
   onAppReady,
   onTimerReady,
-  onTimeUpdate,
-  onThrottledTimeUpdate
+  onTimeUpdate
+  // 💡 削除：onThrottledTimeUpdate
 });
 
 const playBtn = document.querySelector("#play");
@@ -63,13 +69,16 @@ function onTimerReady() {
   jumpBtn.disabled = !p;
 
   // set `animate` method
-  while (p && p.next) {
-    p.animate = animatePhrase;
+  // 💡 変更：各フレーズに`setPhrase`を割り当て、p5.js側に情報を渡す
+  while (p) {
+    p.animate = setPhrase;
     p = p.next;
   }
 }
 
 function onTimeUpdate(position) {
+  // 💡 変更：現在の再生位置を保持
+  currentPosition = position;
 
   // show beatbar
   const beat = player.findBeat(position);
@@ -77,19 +86,32 @@ function onTimeUpdate(position) {
     return;
   }
   beatbarEl.style.width = `${Math.ceil(Ease.circIn(beat.progress(position)) * 100)}%`;
-}
 
-function onThrottledTimeUpdate(position) {
+  // 💡 削除されていたonThrottledTimeUpdateの内容をonTimeUpdateに移動 (任意)
   positionEl.textContent = String(Math.floor(position));
 }
 
-function animatePhrase(now, unit) {
-
+// 💡 変更：再生されたフレーズをグローバル変数に設定する関数
+function setPhrase(now, unit) {
   // show current phrase
   if (unit.contains(now)) {
     phraseEl.textContent = unit.text;
+    currentPhrase = unit;
+
+    // 現在発声中の単語を検索し、グローバル変数に設定
+    let w = unit.findWord(now);
+    if (w) {
+      currentWord = w;
+    } else if (now < unit.startTime) {
+      currentWord = null; // フレーズ開始前
+    }
+  } else if (unit.endTime < now) {
+    currentPhrase = null; // フレーズ終了後
+    currentWord = null;
+    phraseEl.textContent = ""; // フレーズが終了したら非表示にする
   }
 };
+
 
 //ここからエフェクトのやつ
 // 図形を管理する配列
@@ -130,6 +152,9 @@ function draw() {
     s.update();
     s.display();
   }
+
+  // 💡 追加：歌詞の描画をp5.jsで行う
+  drawLyricsEffect(currentPhrase, currentWord, currentPosition);
 }
 
 // ウィンドウサイズが変わった時の対応
@@ -267,84 +292,39 @@ class FloatingShape {
   }
 }
 
-//文字の処理
-function DFlowingText() {
-  this.name = "流れるテキスト";
-  this.type = PUBLIC | PHRASE;
-  this.headTime = 0;
-  this.tailTime = 5000;
+// 💡 新規追加：歌詞をp5.jsで描画するための関数
+function drawLyricsEffect(phrase, word, position) {
+    if (!phrase) return;
 
-  // UI設定
-  this.color = new Color("#000000");
-  this.fontSizeMin = 13;
-  this.fontSizeMax = 20;
-  this.letterSpacing = 30;
-  this.letterSpeed = 30;
-  this.seed = 0;
+    push();
+    // 画面中央に移動（歌詞は画面の中央に描画するため）
+    translate(width / 2, height / 2);
 
-  const DUtil = require("DUtil@1247");
-  const util = DUtil ? new DUtil() : null;
-  const DPolyText = require("DPolyText@1255");
-  const polyText = DPolyText ? new DPolyText() : null;
+    textAlign(CENTER, CENTER);
+    textFont('Arial', 60); // フォント、サイズは適宜変更してください
 
-  this.animate = (now) => {
-    const p = this.getAssignedUnit();
-    Object.assign(polyText, {
-      color: this.color,
-      fontSizeMin: this.fontSizeMin,
-      fontSizeMax: this.fontSizeMax,
-      thickness: this.thickness,
-      colorLine: this.colorLine,
-      colorFill: this.colorFill,
-      alphaFill: this.alphaFill,
-      effectIntensity: this.effectIntensity,
-    });
+    // フレーズ全体を描画（背景のpタグは透明化したため、p5.jsで描画しないと歌詞が見えません）
+    // 黒い影やアウトラインとして利用できます
+    fill(0, 0, 0, 50);
+    text(phrase.text, 0, 0);
 
-    util.seed = p.duration * 123 + 123 + this.seed;
-    let c = 0, dd = 0, list = [];
+    // 発声中の単語を強調して描画
+    if (word) {
 
-    const endProg = Math.pow(Math.max((now - p.endTime) / 1000, 0), 2);
+      // 発声の進行度（0.0〜1.0）
+      const progress = word.progress(position);
 
-    p.children.forEach((word) => {
-      word.children.forEach((char) => {
-        char.rendering.visible = char.startTime <= now;
+      // 単語の強調表示（色が変わるエフェクト）
 
-        const px = (0.2 + (c * this.letterSpacing) / 450) * width;
-        const py = util.rand(height * 0.3, height * 0.7);
-        const dt = (now - char.startTime) / 1000;
+      // 進行度に応じて色相（hue）を変化させる
+      let textHue = map(progress, 0, 1, 240, 60); // 青(240)から黄色(60)へ色相変化
+      fill(textHue, 90, 90);
+      text(word.text, 0, 0);
 
-        const sx = (util.rand(-100, -40) * dt * this.letterSpeed) / 30 +
-                   util.rand(-160, -60) * endProg;
-        const sy = ((util.rand(-150, 150) * dt * this.letterSpeed) / 30) * (endProg + 1);
-
-        char.rendering.tx.translate(px + sx, py + sy);
-        polyText.draw(now, char);
-
-        if (char.rendering.visible) {
-          dd += char.duration;
-          if (dd > 500 || p.charCount <= c + 1) {
-            dd = 0;
-            const ny = (py - height * 0.5) * 0.3 + height * 0.5;
-            if (!list.length) list.push([p.firstChar.startTime, px - (0.2 + c / 15) * width, ny]);
-            list.push([char.startTime + 100, px, ny]);
-          }
-        }
-        c++;
-      });
-    });
-
-    for (let i = list.length - 2; i >= 0; i--) {
-      if (list[i][0] <= now) {
-        const [preT, preX, preY] = list[i];
-        const [nowT, nowX, nowY] = list[i + 1];
-        const prog = sineOut(Math.min((now - preT) / (nowT - preT), 1));
-        const ptx = preX + (nowX - preX) * prog;
-        const pty = preY + (nowY - preY) * prog;
-        p.rendering.tx.translate(-ptx + width * 0.8, -pty + height * 0.5);
-        break;
-      }
+    } else {
+        // 発声中の単語がない場合、フレーズ全体を基本の色で描画
+        fill(0, 0, 0); // 黒
+        text(phrase.text, 0, 0);
     }
-
-    p.rendering.visible = (p.startTime - this.headTime) <= now && now < (p.endTime + this.tailTime);
-  };
+    pop();
 }
