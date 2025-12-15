@@ -291,3 +291,8 @@ class FloatingShape {
     endShape(CLOSE);
   }
 }
+
+// 💡 新規追加：歌詞をp5.jsで描画するための関数
+ function drawLyricsEffect(phrase, word, position) {
+ push();
+}
