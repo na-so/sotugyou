@@ -53,7 +53,7 @@ function onAppReady(app) {
     rewindBtn.addEventListener("click", () => player.video && player.requestMediaSeek(0));
   }
   if (!app.songUrl) {
-    player.createFromSongUrl("http://www.youtube.com/watch?v=ygY2qObZv24");
+    player.createFromSongUrl("https://www.nicovideo.jp/watch/sm45705344");
   }
 }
 
